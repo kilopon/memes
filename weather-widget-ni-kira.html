@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+  <title>Weather App </title>
+  <style>
+    body {
+font-family: lato;
+
+    }
+
+    .weather-card{
+      border-radius: 16px 0px 0px 16px;
+	background: rgb(41, 41, 41, .28);
+/* background: #020024;
+background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 35%, rgba(0, 212, 255, 1) 100%); */
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 3%;
+
+      color: white;
+      outline: 1px;
+
+    }
+    .weather-box {
+      border-radius: 0px 16px 16px 0px;
+      background-position: center;
+      background-size: contain;
+      background-repeat: no-repeat; 
+      transition: background-image 1s ease-in-out;
+      background-color: rgba(41, 41, 41, 0.28);
+      
+    }
+.wrapper{
+  background: rgba(255, 255, 255, 0.28);
+border-radius: 16px;
+box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+
+-webkit-backdrop-filter: blur(10.7px);
+backdrop-filter: blur(10.7px);
+border: 1px solid rgba(255, 255, 255, 1);
+}
+    .weather-wrapper{
+
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+    }
+
+  </style>
+</head>
+<body>
+  <div class="card sm-3 weather-wrapper" style="max-width: 250px;">
+    <div class="row g-0 wrapper">
+      <div class="col-sm-7 weather-card">
+    
+    <h1 class="card-title" id="temperature"></h1>
+    <div class="card-text">
+    <h5 style="font-weight: 300;" id="location"></h5>
+
+    </div>
+    </div>
+
+  <div class="weather-box col-sm-5" id="weatherBox">
+  </div>
+</div>
+  </div>
+
+  <script>
+    function getWeather(cityInput) {
+      const city = cityInput || document.getElementById('city').value || 'Manila';
+
+      // Step 1: Geocode city name to coordinates
+      fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1`)
+        .then(response => response.json())
+        .then(data => {
+          if (!data.results || data.results.length === 0) {
+            document.getElementById('weather').textContent = 'City not found!';
+            return;
+          }
+
+          const location = data.results[0];
+          const lat = location.latitude;
+          const lon = location.longitude;
+
+          // Step 2: Get current weather
+          fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`)
+            .then(response => response.json())
+            .then(weatherData => {
+              const weather = weatherData.current_weather;
+              const code = weather.weathercode;
+              const temp = weather.temperature;
+              const condition = getConditionDescription(code);
+
+
+          
+              document.getElementById('temperature').textContent = `${temp}°C`;
+ 
+              document.getElementById('location').textContent = `${location.name}`;
+              changeBackground(condition.toLowerCase());
+
+              console.log(weatherData);
+            });
+        })
+        .catch(error => {
+   
+          document.getElementById('temperature').textContent = 'Error fetching weather.';
+
+          document.getElementById('location').textContent = 'Error fetching weather.'; 
+          console.error(error);
+        });
+    }
+
+    // Translate Open-Meteo weather code
+    function getConditionDescription(code) {
+      const descriptions = {
+        0: "Clear",
+        1: "Mainly clear",
+        2: "Partly cloudy",
+        3: "Overcast",
+        45: "Fog",
+        48: "Rime fog",
+        51: "Light drizzle",
+        53: "Moderate drizzle",
+        55: "Heavy drizzle",
+        56: "Light freezing drizzle",
+        57: "Heavy freezing drizzle",
+        61: "Light rain",
+        63: "Moderate rain",
+        65: "Heavy rain",
+        66: "Light freezing rain",
+        67: "Heavy freezing rain",
+        71: "Light snow",
+        73: "Moderate snow",
+        75: "Heavy snow",
+        77: "Snow grains",
+        80: "Light rain showers",
+        81: "Moderate rain showers",
+        82: "Violent rain showers",
+        85: "Light snow showers",
+        86: "Heavy snow showers",
+        95: "Thunderstorm",
+        96: "Thunderstorm with light hail",
+        99: "Thunderstorm with heavy hail"
+      };
+      return descriptions[code] || "Unknown";
+    }
+
+    function changeBackground(condition) {
+      let imageUrl = '';
+
+      if (condition.includes('cloud') || condition.includes('overcast')) {
+        imageUrl = 'https://source.unsplash.com/800x600/?cloudy';
+      } else if (condition.includes('rain') || condition.includes('drizzle')) {
+        imageUrl = 'https://media1.tenor.com/m/dkVZ1yQ_uzkAAAAC/kiraomori-kira-omori.gif';
+      } else if (condition.includes('clear') || condition.includes('sun')) {
+        imageUrl = 'https://media1.tenor.com/m/3huFD1Sx7twAAAAC/kira-omori-kiraomori.gif';
+      } else if (condition.includes('snow')) {
+        imageUrl = 'https://source.unsplash.com/800x600/?snow';
+      } else if (condition.includes('fog')) {
+        imageUrl = 'https://source.unsplash.com/800x600/?fog';
+      } else if (condition.includes('thunder')) {
+        imageUrl = 'https://cdn.discordapp.com/attachments/775256974362279948/1396696792745381988/bagyo.gif?ex=687faf80&is=687e5e00&hm=bfc1914b60fa6ff89838bcd39c83978470a81866575a425e78b6bf172863f7e8&';
+      } else {
+        imageUrl = 'https://source.unsplash.com/800x600/?weather';
+      }
+
+      document.getElementById('weatherBox').style.backgroundImage = `url('${imageUrl}')`;
+    }
+
+    // On page load, show Manila weather
+    window.onload = function () {
+      getWeather('Manila,Philippines');
+      // Refresh every 30 minutes (1800000 ms)
+      setInterval(() => getWeather('Manila,Philippines'), 1800000);
+    };
+  </script>
+</body>
+<!-- art by olap -->
+ <!-- badcode by kilopon -->
+</html>
