@@ -9,15 +9,33 @@
   <title>Weather App </title>
   <style>
     body {
-font-family: lato;
+      font-family: lato;
 
     }
+    .time-container{
+      display: flex
+;
+    }
 
+    .time{
+    display: flex
+;
+    align-items: center;
+    flex-direction: column;
+    }
+.time-font{
+  font-size: 64px;
+}
+
+    .loc-temp-wrapper{
+      display: flex;
+          align-content: flex-end;
+    align-items: center;
+    }
     .weather-card{
       border-radius: 16px 0px 0px 16px;
-	background: rgb(41, 41, 41, .28);
-/* background: #020024;
-background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 35%, rgba(0, 212, 255, 1) 100%); */
+
+
     display: flex;
     align-content: center;
     justify-content: center;
@@ -35,37 +53,77 @@ background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 35%,
       background-size: contain;
       background-repeat: no-repeat; 
       transition: background-image 1s ease-in-out;
-      background-color: rgba(41, 41, 41, 0.28);
+      background-color: rgba(170, 129, 129);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
       
     }
-.wrapper{
-  background: rgba(255, 255, 255, 0.28);
-border-radius: 16px;
+
+    .weather-wrapper{
+      	background: rgb(255, 128, 128);
+        border-radius: 16px;
 box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 
 -webkit-backdrop-filter: blur(10.7px);
 backdrop-filter: blur(10.7px);
 border: 1px solid rgba(255, 255, 255, 1);
-}
-    .weather-wrapper{
-
       border-radius: 16px;
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
     }
 
+    hr{margin: 1rem 0;
+    color: inherit;
+    border: 0;
+    border-top: var(--bs-border-width) solid;
+    opacity: 100}
+
   </style>
+
+
+
+
 </head>
 <body>
-  <div class="card sm-3 weather-wrapper" style="max-width: 250px;">
+  <div class="card sm-3 weather-wrapper" style="max-width: 500px; max-height: fit-content;">
     <div class="row g-0 wrapper">
       <div class="col-sm-7 weather-card">
-    
-    <h1 class="card-title" id="temperature"></h1>
-    <div class="card-text">
-    <h5 style="font-weight: 300;" id="location"></h5>
+        
+          <div class="time-container">
+    <div class="time">
+<div style="display: flex;align-items: center; ">
+      <div class="col-sm " style="
+    height: 80px;
+    padding-left: 7%;
+"><p class="time-font" id="time">--:--:--</p></div>
+      
+      <div class="col-sm "><span class="ampm" id="ampm">--</span></div>
 
+</div>
+
+      <div class="col-sm">    <div class="date" id="date">Loading date...</div>
+      </div>
+     
     </div>
-    </div>
+     <span class="icon" id="icon">
+        <img src="" alt="Icon" /></span>
+
+  </div>
+
+<hr width="100%;" color="white" size="5" opacity="0">
+  <div class="loc-temp-wrapper row">
+
+  
+         <div class="card-text col-sm">
+         <h5 style="font-weight: 300;" id="location"></h5>
+
+        </div>
+
+        <h1 class="card-title col-sm" id="temperature"></h1>
+
+
+      </div>
+
+
+      </div>
 
   <div class="weather-box col-sm-5" id="weatherBox">
   </div>
@@ -73,6 +131,48 @@ border: 1px solid rgba(255, 255, 255, 1);
   </div>
 
   <script>
+// FOR clock
+    function updateTime() {
+      const sunImage = "https://img.icons8.com/ios/50/FFFFFF/sun--v1.png";
+      const moonImage = "https://img.icons8.com/ios-filled/100/FFFFFF/moon-symbol.png";
+// 
+      const now = new Date();
+      let hours = now.getHours();
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      const seconds = now.getSeconds().toString().padStart(2, '0');
+
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const isDay = hours >= 6 && hours < 18;
+
+      hours = hours % 12;
+      hours = hours ? hours : 12;
+
+      const timeString = `${hours.toString().padStart(2, '0')}:${minutes}`;
+      const dateString = now.toLocaleDateString(undefined, {
+        weekday: 'short', month: 'short', day: 'numeric'
+      });
+
+      document.getElementById('time').textContent = timeString;
+      document.getElementById('ampm').textContent = ampm;
+
+      const iconImg = document.querySelector("#icon img");
+      iconImg.src = isDay ? sunImage : moonImage;
+      iconImg.alt = isDay ? "Sun" : "Moon";
+
+      document.getElementById('date').textContent = dateString;
+    }
+
+    setInterval(updateTime, 1000);
+    updateTime(); // initial call
+
+
+
+
+
+
+
+
+// weather
     function getWeather(cityInput) {
       const city = cityInput || document.getElementById('city').value || 'Manila';
 
