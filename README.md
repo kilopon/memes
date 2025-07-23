@@ -1,4 +1,4 @@
-# memes
+# memes branch
 <h3>random weather app widget for obs</h3>
 <h3>I'll prolly edit this once I get enough gifs, and test out other weather conditions</h3>
 <h4>I set the location to manila, para walang doxxing </h4>
@@ -15,8 +15,5 @@ how to :</p>
 <p>hould look like this in obs</p>
 <br>
 
-<img width="674" height="659" alt="Screenshot 2025-07-22 225542" src="https://github.com/user-attachments/assets/20e0cdbd-bbc4-4d16-a077-cb7fa7d51965" />
-<br>
-<p>and like this if opened in browser</p>
-<br>
-<img width="485" height="274" alt="Screenshot 2025-07-22 225645" src="https://github.com/user-attachments/assets/0fb3592c-f972-41ac-93dc-812dc0fc00c5" />
+<img width="589" height="253" alt="image" src="https://github.com/user-attachments/assets/55457cd2-385f-4a93-b433-f60a00ac37db" />
+
